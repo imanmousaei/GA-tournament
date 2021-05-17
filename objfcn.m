@@ -1,16 +1,17 @@
 function F=objfcn(people,p)   
-   fitness = 0;
-   cost = 0;
+   fitness = 1;
+   cost = 1;
       
-   [n,~] = size(people);
+   n = size(people,1);
    for i = 1:n
        point = people(i);
-       dist = norm(point-p);
+       dis = dist(point,p);
        
-       fitness = fitness + 1/dist^2;
+       fitness = fitness + 1/dis^2;
        
-       if dist < 100 % meters
-           cost = cost + 1/dist^4;
+       if dis < 100 % meters
+           cost = cost + 1/dis^4;
+           
        end
    end
    

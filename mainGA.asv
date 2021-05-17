@@ -16,16 +16,17 @@ peoplesize = 30;
 popsize=50;
 ER=0.5;
 NN= round(ER * popsize);
-Nvar=5;
 P = 0.3;
-K = 3;
+K = 1;
 
 
-xs = rand(1,peoplesize)*1000;
-ys = rand(1,peoplesize)*1000;
+xss = rand(1,peoplesize)*1000;
+yss = rand(1,peoplesize)*1000;
+
+xss(1)
 
 for i=1:peoplesize
-    people(i,1:2)=[xs(i),ys(i)];
+    people(i,1:2)=[xss(i),yss(i)];
 end
 
 %% initial population [0,1000]
@@ -48,12 +49,12 @@ for generation=1:maxGen
     %prob = ones(1,popsize).*(1-P).^powers.*P; % prob(i) = p*(1-p)^i
     
     % sum(prob) should equal 1 so:
-    pb = 1 - sum(prob);
-    prob(1) = prob(1) + pb;
+    %pb = 1 - sum(prob);
+    %prob(1) = prob(1) + pb;
 
     
     % plot
-    disp(['best cost=', num2str(val(end))]);
+    disp(['best fitness=', num2str(val(end))]);
     plot(generation,val(end),'k.');
     hold on
     pause(0.0000001)
@@ -65,13 +66,13 @@ for generation=1:maxGen
        [maxval, maxidx] = max(objfcn(people, chromosome(trnmnt(i))));
        newpop(i) = chromosome(maxidx);
     end
-    for i=NN+1: popsize
-% %         pid1=randsrc(1,1, [1:popsize ; prob]);
-%         pid2=randsrc(1,1, [1:popsize ; prob]);
-        parent1=chromosome(idx(pid1));
-        parent2=chromosome(idx(pid2));
+    for i=NN+1:popsize
+        pid1=randsrc(1,1,[1:NN]);
+        pid2=randsrc(1,1,[1:NN]);
+        parent1=newpop(pid1);
+        parent2=newpop(pid2);
     % crossover/ breed
-        child=crossover(parent1,parent2)
+        child=crossover(parent1,parent2);
     % mutation:
         if rand>0.5
           child=mutation(child);
@@ -82,5 +83,3 @@ for generation=1:maxGen
     chromosome=newpop;
 end
 
-best = parent1;
-obj = objfcn(best);

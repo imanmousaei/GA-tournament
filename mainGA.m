@@ -10,22 +10,21 @@ clear
 close all
 
 %% constants
-N=10;
 maxGen=1000;
 peoplesize = 30;
 popsize=50;
 ER=0.5;
 NN= round(ER * popsize);
-Nvar=5;
 P = 0.3;
-K = 3;
+K = 5;
 
 
-xs = rand(1,peoplesize)*1000;
-ys = rand(1,peoplesize)*1000;
+xss = rand(1,peoplesize)*1000;
+yss = rand(1,peoplesize)*1000;
+
 
 for i=1:peoplesize
-    people(i,1:2)=[xs(i),ys(i)];
+    people(i,1:2)=[xss(i),yss(i)];
 end
 
 %% initial population [0,1000]
@@ -62,12 +61,16 @@ for generation=1:maxGen
     % selection:
     trnmnt = randi(popsize,NN,K);
     for i=1:NN
-       [maxval, maxidx] = max(objfcn(people, chromosome(trnmnt(i))));
-       newpop(i) = chromosome(maxidx);
+        newpop(i) = chromosome(trnmnt(i,1));
+        for j=2:K
+            if objfcn(people, chromosome(trnmnt(i,j))) > objfcn(people, newpop(i))
+                newpop(i) = chromosome(trnmnt(i,j));
+            end
+        end
     end
-    for i=NN+1: popsize
-        pid1=randsrc(1,1, [1:NN]);
-        pid2=randsrc(1,1, [1:NN]);
+    for i=NN+1:popsize
+        pid1=randsrc(1,1,[1:NN]);
+        pid2=randsrc(1,1,[1:NN]);
         parent1=newpop(pid1);
         parent2=newpop(pid2);
     % crossover/ breed
@@ -82,5 +85,3 @@ for generation=1:maxGen
     chromosome=newpop;
 end
 
-best = parent1;
-obj = objfcn(people, best);
